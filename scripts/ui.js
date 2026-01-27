@@ -102,6 +102,8 @@ if (!runner) {
   process.exit(1);
 }
 
+const installFilter = ["--filter", "./ui..."];
+
 const script =
   action === "install"
     ? null
@@ -118,7 +120,7 @@ if (action !== "install" && !script) {
   process.exit(2);
 }
 
-if (action === "install") run(runner.cmd, ["install", ...rest]);
+if (action === "install") run(runner.cmd, ["install", ...installFilter, ...rest]);
 else {
   if (!depsInstalled(action === "test" ? "test" : "build")) {
     const installEnv =
@@ -126,7 +128,9 @@ else {
         ? { ...process.env, NODE_ENV: "production" }
         : process.env;
     const installArgs =
-      action === "build" ? ["install", "--prod"] : ["install"];
+      action === "build"
+        ? ["install", "--prod", ...installFilter]
+        : ["install", ...installFilter];
     runSync(runner.cmd, installArgs, installEnv);
   }
   run(runner.cmd, ["run", script, ...rest]);
