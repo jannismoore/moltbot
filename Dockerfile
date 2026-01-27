@@ -37,4 +37,4 @@ ENV NODE_ENV=production
 # This reduces the attack surface by preventing container escape via root privileges
 USER node
 
-CMD ["sh", "-c", "if [ -z \"${CLAWDBOT_GATEWAY_TOKEN:-}\" ]; then CLAWDBOT_GATEWAY_TOKEN=$(node -e \"console.log(require('node:crypto').randomBytes(32).toString('hex'))\"); export CLAWDBOT_GATEWAY_TOKEN; echo \"[moltbot] Generated gateway token: ${CLAWDBOT_GATEWAY_TOKEN}\"; fi; node dist/entry.js gateway --allow-unconfigured --bind lan --port ${PORT:-18789}"]
+CMD ["sh", "-c", "if [ -z \"${CLAWDBOT_GATEWAY_TOKEN:-}\" ]; then CLAWDBOT_GATEWAY_TOKEN=$(node -e \"console.log(require('node:crypto').randomBytes(32).toString('hex'))\"); export CLAWDBOT_GATEWAY_TOKEN; echo \"[moltbot] Generated gateway token: ${CLAWDBOT_GATEWAY_TOKEN}\"; fi; if [ -z \"${NODE_OPTIONS:-}\" ]; then export NODE_OPTIONS=\"--max-old-space-size=${CLAWDBOT_NODE_HEAP_MB:-448}\"; fi; node dist/entry.js gateway --allow-unconfigured --bind lan --port ${PORT:-18789}"]
